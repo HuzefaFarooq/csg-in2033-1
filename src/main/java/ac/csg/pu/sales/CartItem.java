@@ -3,6 +3,7 @@ package ac.csg.pu.sales;
 import ac.csg.pu.prm.Promotion;
 
 public class CartItem {
+    private int id;
     private final Product product;
     private final Promotion promotion; // can be null
     private int quantity;

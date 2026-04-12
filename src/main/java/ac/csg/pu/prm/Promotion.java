@@ -12,7 +12,7 @@ public class Promotion {
     private LocalDate startDate;
     private LocalDate endDate;
 
-    // Map of product ID → discount percentage (0–100)
+    // Map of product ID -> discount percentage (0–100)
     private final Map<Integer, Double> discounts;
 
     public Promotion(int id, String name, boolean active, LocalDate startDate, LocalDate endDate, Map<Integer, Double> discounts) {
