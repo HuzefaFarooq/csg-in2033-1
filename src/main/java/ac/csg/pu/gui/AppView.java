@@ -2,6 +2,7 @@ package ac.csg.pu.gui;
 
 import ac.csg.pu.comms.RestServer;
 import ac.csg.pu.members.UserDatabase;
+import ac.csg.pu.ord.OrderDatabase;
 import ac.csg.pu.prm.PromotionDatabase;
 import ac.csg.pu.test.TestDataInitializer;
 import javafx.application.Application;
@@ -19,6 +20,7 @@ public class AppView extends Application {
 
         UserDatabase.createTable();
         PromotionDatabase.createTables();
+        OrderDatabase.createTables();
         TestDataInitializer.init();
     }
 

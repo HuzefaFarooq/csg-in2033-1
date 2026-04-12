@@ -1,7 +1,5 @@
 package ac.csg.pu.members;
 
-import static ac.csg.pu.data.DatabaseUtility.*;
-
 import ac.csg.pu.data.DatabaseUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,8 +29,15 @@ public class UserDatabase {
     }
 
     public static void insertAdmin(String email, String password) {
-        insertUser(email, password, "A");
+        insertUser(email, password, UserType.A.name());
         setFirstLogin(email, false);
+    }
+
+    public static void insertNewUser(String email, String password, String userType) {
+        String sql = "INSERT OR IGNORE INTO users(email, password, userType) VALUES(?,?,?)";
+        db.executeUpdate(sql, email, password, userType);
+        setFirstLogin(email, true);
+
     }
 
     public static boolean login(String email, String password) {
@@ -40,29 +45,38 @@ public class UserDatabase {
         return db.queryInt(sql, email, password) > 0;
     }
 
-    public static String getUserType(String email) {
+    public static UserType getUserType(String email) {
+        if (email == null) return null;
         String sql = "SELECT userType FROM users WHERE email=?";
-        return db.queryString(sql, email);
+        return UserType.valueOf(db.queryString(sql, email));
     }
 
     public static void setFirstLogin(String email, boolean input) {
         db.executeUpdate("UPDATE users SET firstLogin=? WHERE email=?", input ? 1 : 0, email);
     }
 
+    public static void changePassword(String email, String newPassword) {
+        db.executeUpdate("UPDATE users SET password=? WHERE email=?", newPassword, email);
+    }
+
     public static boolean isFirstLogin(String email) {
+        if (email == null) return false;
         return db.queryInt("SELECT firstLogin FROM users WHERE email=?", email) == 1;
     }
 
     public static int getPurchaseCount(String email) {
+        if (email == null) return -1;
         return db.queryInt("SELECT purchaseCount FROM users WHERE email=?", email);
     }
 
     public static boolean isTenthOrder(String email) {
+        if (email == null) return false;
         int count = getPurchaseCount(email);
         return (count + 1) % 10 == 0;
     }
 
     public static void incrementPurchase(String email) {
+        if (email == null) return;
         db.executeUpdate("UPDATE users SET purchaseCount = purchaseCount + 1 WHERE email=?", email);
     }
 

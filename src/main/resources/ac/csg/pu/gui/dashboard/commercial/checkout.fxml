@@ -28,6 +28,7 @@
         <TextField fx:id="expiryField" promptText="Expiry (MM/YY)"/>
         <TextField fx:id="cvvField" promptText="CVV"/>
         <TextField fx:id="addressField" promptText="Delivery Address"/>
+        <TextField fx:id="guestEmailField" promptText="your@email.com"/>
 
         <!-- Action buttons -->
         <HBox spacing="10" alignment="CENTER">

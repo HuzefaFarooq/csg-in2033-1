@@ -1,7 +1,7 @@
 package ac.csg.pu.test;
 
+import ac.csg.pu.members.UserType;
 import ac.csg.pu.members.UserDatabase;
-import ac.csg.pu.prm.Promotion;
 import ac.csg.pu.prm.PromotionDatabase;
 import ac.csg.pu.sales.Merchant;
 import ac.csg.pu.sales.Product;
@@ -38,8 +38,8 @@ public class TestDataInitializer {
         // Example test data
         UserDatabase.createTable(); // make sure table exists
         UserDatabase.insertAdmin("admin@example.com", "password123");
-        UserDatabase.insertUser("user1@example.com", "password123", "C");
-        UserDatabase.insertUser("user2@example.com", "password123", "C");
+        UserDatabase.insertUser("user1@example.com", "password123", UserType.C.name());
+        UserDatabase.insertUser("user2@example.com", "password123", UserType.C.name());
     }
 
     public static void initPromos() {

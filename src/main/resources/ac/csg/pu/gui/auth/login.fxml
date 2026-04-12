@@ -18,5 +18,6 @@
     <PasswordField fx:id="passwordField" promptText="Password" styleClass="auth-input"/>
     <Button fx:id="loginButton" text="Login" onAction="#onLogin" styleClass="auth-button"/>
     <Hyperlink text="Don't have an account?" onAction="#switchToRegister" styleClass="auth-link"/>
+    <Hyperlink text="Login as a guest." onAction="#onGuestLogin" styleClass="auth-link"/>
     <Label fx:id="errorLabel" styleClass="auth-error"/>
 </VBox>

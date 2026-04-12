@@ -1,20 +1,17 @@
 package ac.csg.pu.gui.auth;
 
-import ac.csg.pu.gui.AppView;
 import ac.csg.pu.gui.SceneHelper;
 import ac.csg.pu.gui.util.SessionManager;
 import ac.csg.pu.gui.util.ShakeAnimation;
+import ac.csg.pu.members.UserType;
 import ac.csg.pu.members.UserDatabase;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import org.eclipse.jetty.websocket.api.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 public class LoginController {
     private final static Logger logger = LoggerFactory.getLogger(LoginController.class);
@@ -28,6 +25,10 @@ public class LoginController {
 
     @FXML
     private void initialize() {
+        if (SessionManager.Pending.hasMessage()) {
+            errorLabel.setText(SessionManager.Pending.getMessage());
+        }
+
         emailField.textProperty().addListener((obs, oldText, newText) -> {
             if (!newText.matches("[^@\\s]+@[^@\\s]+\\.[^@\\s]+")) {
                 errorLabel.setText("Invalid email format");
@@ -47,13 +48,18 @@ public class LoginController {
         if (UserDatabase.login(email, password)) {
             errorLabel.setText("Login successful!");
 
-            String userType = UserDatabase.getUserType(email);
+            UserType userType = UserDatabase.getUserType(email);
             SessionManager.login(email, userType);
 
+            if (UserDatabase.isFirstLogin(email)) {
+                SceneHelper.switchScene("auth/change-password.fxml");
+                return;
+            }
+
             switch (userType) {
-                case "A" -> switchToAdminDashboard();
-                case "NC" -> switchToNonCommercialDashboard();
-                case "C" -> switchToCommercialDashboard();
+                case A -> switchToAdminDashboard();
+                case NC -> switchToNonCommercialDashboard();
+                case C -> switchToCommercialDashboard();
                 default -> {
                     errorLabel.setText("Unknown user type: " + userType);
                     SceneHelper.switchScene("auth/login.fxml");
@@ -66,6 +72,11 @@ public class LoginController {
             ShakeAnimation.shake(passwordField);
             errorLabel.setText("Invalid email or password");
         }
+    }
+
+    @FXML
+    private void onGuestLogin() {
+        switchToCommercialDashboard();
     }
 
     private void switchToCommercialDashboard() {

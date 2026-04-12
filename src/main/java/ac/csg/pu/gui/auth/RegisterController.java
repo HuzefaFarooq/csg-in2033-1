@@ -1,6 +1,9 @@
 package ac.csg.pu.gui.auth;
 
 import ac.csg.pu.gui.SceneHelper;
+import ac.csg.pu.gui.util.ShakeAnimation;
+import ac.csg.pu.members.UserDatabase;
+import ac.csg.pu.members.UserType;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
@@ -45,19 +48,73 @@ public class RegisterController {
 
     @FXML
     private void onRegister() {
-        String email = emailField.getText();
+        if (!validateRegistrationInfo()) return;
+        saveUser();
+    }
+
+    @FXML
+    private boolean validateRegistrationInfo() {
+        String email = emailField.getText().trim();
+        boolean isCommercial = commercialRadio.isSelected();
+
+        if (accountTypeGroup.getSelectedToggle() == null) {
+            errorLabel.setText("Please select an account type.");
+            return false;
+        }
+
+        if (email.isEmpty()) {
+            errorLabel.setText("Email is required.");
+            shakeFields();
+            return false;
+        }
+
+        if (isCommercial) {
+            String companyName = companyNameField.getText().trim();
+            String companyAddress = companyAddressField.getText().trim();
+            String companyRegId = companyRegIdField.getText().trim();
+
+            if (companyName.isEmpty() || companyAddress.isEmpty() || companyRegId.isEmpty()) {
+                errorLabel.setText("All fields are required.");
+                shakeFields();
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void saveUser() {
+        String email = emailField.getText().trim();
         boolean isCommercial = ((RadioButton)accountTypeGroup.getSelectedToggle()).getText().equals("Commercial");
 
-        String companyName = companyNameField.getText();
-        String companyAddress = companyAddressField.getText();
-        String companyRegId = companyRegIdField.getText();
+        if (isCommercial) {
+            String companyName = companyNameField.getText().trim();
+            String companyAddress = companyAddressField.getText().trim();
+            String companyRegId = companyRegIdField.getText().trim();
 
-        // TODO: call PromotionDatabase/UserDatabase to insert user
-        errorLabel.setText("Registration logic not implemented yet.");
+            // TODO: forward to SA for approval, save details when approved
+            errorLabel.setText("Commercial application submitted for approval.");
+            return;
+        }
+
+        String password = UserDatabase.generatePassword();
+
+        UserDatabase.insertNewUser(
+                email,
+                password,
+                UserType.NC.name()
+        );
+
+        errorLabel.setText("Registration successful! Generated password (" + password + ") has been sent to email " + email);
     }
 
     @FXML
     private void switchToLogin() {
         SceneHelper.switchScene("auth/login.fxml");
+    }
+
+    private void shakeFields() {
+        ShakeAnimation.shake(emailField);
+        ShakeAnimation.shake(commercialFields);
     }
 }
