@@ -112,7 +112,7 @@ public class CheckoutController {
     }
 
     private void returnHome() {
-        SceneHelper.switchScene("home.fxml");
+        SceneHelper.switchScene("dashboard/commercial/home.fxml");
     }
 
     private void processPayment() {
