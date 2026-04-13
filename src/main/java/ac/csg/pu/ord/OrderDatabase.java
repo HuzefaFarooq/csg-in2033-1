@@ -16,7 +16,7 @@ public class OrderDatabase {
     public static void createTables() {
         String orderTable = "CREATE TABLE IF NOT EXISTS orders ("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + "customer_email TEXT NOT NULL"
+                + "customer_email TEXT NOT NULL,"
                 + "status TEXT NOT NULL,"
                 + "date TEXT,"
                 + "address TEXT"
@@ -39,7 +39,7 @@ public class OrderDatabase {
 
     // ---- Order Management ----
     public static int insertOrder(String customerEmail, String status, String date, String address) {
-        String sql = "INSERT INTO orders(customer_email, status, date, address) VALUES(?, ?, ?)";
+        String sql = "INSERT INTO orders(customer_email, status, date, address) VALUES(?,?,?,?)";
         return db.executeInsert(sql, customerEmail, status, date, address);
     }
 
